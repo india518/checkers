@@ -26,13 +26,13 @@ class Board
   
   def display
     print "    | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |\n"
-    8.times do |x|
+    8.times do |row|
       print "#{x} : "
-      8.times do |y|
-        if self.grid[x][y].nil?
+      8.times do |column|
+        if self.grid[row][column].nil?
           print "|   " 
         else
-          print "| #{self.grid[x][y].display} "
+          print "| #{self.grid[row][column].display} "
         end
       end
       print "|\n"
@@ -40,30 +40,29 @@ class Board
   end
   
   
-  def validate_move(move_path)
-    #move path has two arrays: i.e. [[2,1],[3,2]]
+  def validate_move(move, end_point, color)
+    #move has two arrays: i.e. [[2,1],[3,2]]
     start_point = move_path[0]
     end_point = move_path[1]
-    
     #are both points valid?
     return false unless valid_square?(start_point)
     return false unless valid_square?(end_point)
+    #does the piece on the start_point belong to the current player?
+    return false unless valid_piece?(start_point, color)
     
     #is end point one square away in the right direction?
-    return true if end_point.slide_one_good?(end_point)
+    return true if slide_one_good?(end_point)
     
     #is the end point one jump (two squares) away in the right direction?
-    return true if end_point.jump?(end_point)	
+    return true if valid_jump?(end_point)	
   end
-
-
+  
   def valid_square?(location)
     # locaton is an array: [x,y]
     unless (0..7).include?(location[0]) && (0..7).include?(location[1])
       puts "#{location[0]},#{location[1]} is not even on the board!"
       return false
     end
-    
     if location[0].even? && location[1].even?
       puts "#{location[0]},#{location[1]} is not a valid square."
       return false
@@ -71,8 +70,28 @@ class Board
       puts "#{location[0]},#{location[1]} is not a valid square."
       return false
     end
-    
     true
+  end
+  
+  def valid_piece?(location, color)
+    color == grid[location[0]][location[1]].color
+  end
+
+  
+  def slide_one_good?(start_point, end_point)
+    #get vectors for start_point
+    vectors = grid[start_point[0]][start_point[1]].vectors
+    
+    #can this be a helper function?
+    vectors.each do |vector|
+      possible_location = [start_point[0]+vector[0], start_point[1]+vector[1]]
+      return true if possible_location == end_point #we got a good move!
+    end
+    false
+  end
+
+  
+  def valid_jump?(location)
   end
   
   def do_move(start_location,end_location)

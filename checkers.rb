@@ -24,7 +24,14 @@ class Checkers
         #ask for player's turn
         move = current_player.get_move    
         #check player's turn
+        
+        #TODO: is it the current player's piece?
+        valid_move = board.grid.color == current_player.color
+        
+        #TODO: does this function need the piece? (is it a king?)
+        # or does the board already know?
         valid_move = board.validate_move(move, current_player.color)
+        
         #do we have to ask again?
         current_player.inform_invalid_move unless valid_move
       end
