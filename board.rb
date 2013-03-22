@@ -39,18 +39,17 @@ class Board
     end
   end
   
-  
-  def validate_move(move, end_point, color)
-    #move has two arrays: i.e. [[2,1],[3,2]]
-    start_point = move_path[0]
-    end_point = move_path[1]
+  def validate_move(move, color)
+    #move has two arrays: i.e. [[2,1],[3,2]]. Let's break it into points!
+    start_point = move[0]
+    end_point = move[1]
     #are both points valid?
     return false unless valid_square?(start_point)
     return false unless valid_square?(end_point)
     return false unless valid_piece?(start_point, color)
-    return true if slide_one_good?(end_point)
+    return true if slide_one_good?(start_point, end_point)
     #is the end point one jump (two squares) away in the right direction?
-    return true if valid_jump?(end_point)
+    return true if valid_jump?(start_point, end_point)
     #if we aren't sliding up and we aren't making a jump,
     false
   end
@@ -94,6 +93,7 @@ class Board
     vectors = piece.vectors
     
     #this is a jump, so our multiplier is 2! (enemy multiplier is 1)
+    # TODO: again, can this be a helper function?
     vectors.each do |vector|
       middle_spot = [start_point[0]+vector[0], start_point[1]+vector[1]]
       possible_location = [start_point[0]+(vector[0]*2), start_point[1]+(vector[1]*2)]
@@ -101,32 +101,29 @@ class Board
       if possible_location == end_point
         #is there an enemy in between?
         if grid[middle_spot[0]][middle_spot[1]].nil?
-          puts "You can't jump an empty spot!"
+          puts "You can't jump an empty spot!" #raise an exception later!!
           return false
         elsif grid[middle_spot[0]][middle_spot[1]].color == piece.color
-          puts "You can't jump your own piece!"
+          puts "You can't jump your own piece!" #raise an exception later!!
           return false
         elsif grid[middle_spot[0]][middle_spot[1]].color != piece.color
-          puts "This move is OK!"
+          #puts "This move is OK!"
           return true #yay!
         end
       end
     end
     #endpoint not in acceptable path
-    puts "false"
     false
   end
   
-  def do_move(start_location,end_location)
+  def do_move(start_location,end_location,middle = nil)
     playing_piece = grid[start_location[0]][start_location[1]]
     # Update board
     grid[start_location[0]][start_location[1]] = nil
     grid[end_location[0]][end_location[1]] = playing_piece
-    #Update piece's position
+    #kill enemy!!! (if we jumped one) and update piece's position
+    grid[middle[0]][middle[1]] = nil if middle
     playing_piece.position = [end_location[0]][end_location[1]]
-    # TODO:
-    # Remove a jumped piece from the board!
-    #
   end
   
 end
