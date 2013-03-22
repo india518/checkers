@@ -41,15 +41,21 @@ class Board
   
   
   def validate_move(move_path)
-    #move path can be any length, because there can be more than one move!
-    unchecked_move_path = move_path.dup
+    #move path has two arrays: i.e. [[2,1],[3,2]]
+    start_point = move_path[0]
+    end_point = move_path[1]
     
-    start_point = mo
-	  number_of_moves = move_path.length
+    #are both points valid?
+    return false unless valid_square?(start_point)
+    return false unless valid_square?(end_point)
     
-    #move_path.each do |location|
-	
+    #is end point one square away in the right direction?
+    return true if end_point.slide_one_good?(end_point)
+    
+    #is the end point one jump (two squares) away in the right direction?
+    return true if end_point.jump?(end_point)	
   end
+
 
   def valid_square?(location)
     # locaton is an array: [x,y]
@@ -69,8 +75,16 @@ class Board
     true
   end
   
-  def do_move
-    
+  def do_move(start_location,end_location)
+    playing_piece = grid[start_location[0]][start_location[1]]
+    # Update board
+    grid[start_location[0]][start_location[1]] = nil
+    grid[end_location[0]][end_location[1]] = playing_piece
+    #Update piece's position
+    playing_piece.position = [end_location[0]][end_location[1]]
+    # TODO:
+    # Remove a jumped piece from the board!
+    #
   end
   
 end
