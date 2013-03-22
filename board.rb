@@ -40,8 +40,33 @@ class Board
   end
   
   
-  def validate_move
+  def validate_move(move_path)
+    #move path can be any length, because there can be more than one move!
+    unchecked_move_path = move_path.dup
     
+    start_point = mo
+	  number_of_moves = move_path.length
+    
+    #move_path.each do |location|
+	
+  end
+
+  def valid_square?(location)
+    # locaton is an array: [x,y]
+    unless (0..7).include?(location[0]) && (0..7).include?(location[1])
+      puts "#{location[0]},#{location[1]} is not even on the board!"
+      return false
+    end
+    
+    if location[0].even? && location[1].even?
+      puts "#{location[0]},#{location[1]} is not a valid square."
+      return false
+    elsif location[0].odd? && location[1].odd?
+      puts "#{location[0]},#{location[1]} is not a valid square."
+      return false
+    end
+    
+    true
   end
   
   def do_move
