@@ -27,7 +27,7 @@ class Board
   def display
     print "    | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |\n"
     8.times do |row|
-      print "#{x} : "
+      print "#{row} : "
       8.times do |column|
         if self.grid[row][column].nil?
           print "|   " 
@@ -47,14 +47,12 @@ class Board
     #are both points valid?
     return false unless valid_square?(start_point)
     return false unless valid_square?(end_point)
-    #does the piece on the start_point belong to the current player?
     return false unless valid_piece?(start_point, color)
-    
-    #is end point one square away in the right direction?
     return true if slide_one_good?(end_point)
-    
     #is the end point one jump (two squares) away in the right direction?
-    return true if valid_jump?(end_point)	
+    return true if valid_jump?(end_point)
+    #if we aren't sliding up and we aren't making a jump,
+    false
   end
   
   def valid_square?(location)
@@ -77,7 +75,6 @@ class Board
     color == grid[location[0]][location[1]].color
   end
 
-  
   def slide_one_good?(start_point, end_point)
     #get vectors for start_point
     vectors = grid[start_point[0]][start_point[1]].vectors
@@ -90,8 +87,34 @@ class Board
     false
   end
 
-  
-  def valid_jump?(location)
+  def valid_jump?(start_point, end_point)
+    possible_locations = []
+    #get vectors for start_point
+    piece = grid[start_point[0]][start_point[1]]
+    vectors = piece.vectors
+    
+    #this is a jump, so our multiplier is 2! (enemy multiplier is 1)
+    vectors.each do |vector|
+      middle_spot = [start_point[0]+vector[0], start_point[1]+vector[1]]
+      possible_location = [start_point[0]+(vector[0]*2), start_point[1]+(vector[1]*2)]
+      
+      if possible_location == end_point
+        #is there an enemy in between?
+        if grid[middle_spot[0]][middle_spot[1]].nil?
+          puts "You can't jump an empty spot!"
+          return false
+        elsif grid[middle_spot[0]][middle_spot[1]].color == piece.color
+          puts "You can't jump your own piece!"
+          return false
+        elsif grid[middle_spot[0]][middle_spot[1]].color != piece.color
+          puts "This move is OK!"
+          return true #yay!
+        end
+      end
+    end
+    #endpoint not in acceptable path
+    puts "false"
+    false
   end
   
   def do_move(start_location,end_location)

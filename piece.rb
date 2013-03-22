@@ -28,15 +28,12 @@ class Piece
     when :r
       [[1,-1],[1,1]]
     when :b
-      [[-1,-1],[-1,-1]]
+      [[-1,-1],[-1,1]]
     else #kings move both ways
-      [[1,-1],[1,1],[-1,1],[-1,-1]]
+      [[1,-1],[1,1],[-1,-1],[-1,1]]
     end
   end
-    
-  def path_to?
-    
-  end
+
 end
 
 
