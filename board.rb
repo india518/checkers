@@ -40,5 +40,12 @@ class Board
   end
   
   
+  def validate_move
+    
+  end
+  
+  def do_move
+    
+  end
   
 end
