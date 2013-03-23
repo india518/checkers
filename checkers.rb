@@ -15,29 +15,23 @@ class Checkers
   end
 
   def play
+    game_over = false
     
-    until game_over?
+    until game_over
       board.display
       valid_move = false
     
       until valid_move
-        #ask for player's turn
-        move = current_player.get_move    
-        #check player's turn
-        
-        #TODO: does this function need the piece? (is it a king?)
-        # or does the board already know?
+        move = current_player.get_move
         valid_move = board.validate_move(move, current_player.color)
-        
-        #do we have to ask again?
         current_player.inform_invalid_move unless valid_move
       end
   
-      board.do_move(move) #make player's turn
-      #switch player
-      switch_player
+      board.do_move(move)
+      switch_player unless game_over = win?
     end
     
+    puts "Yay, #{current_player.color} wins!"
   end
 
   def switch_player
@@ -48,17 +42,19 @@ class Checkers
     end
   end
   
-  def enemy_player
-    if current_player == @red
-      @black
-    else current_player == @black
-      @red
-    end
-  end
-  
-  def game_over?
+  def win?
     # are all enemy_player's pieces removed from board?
-    #return true/false
+    # iterate over board for enemy color
+    enemy_count = []
+    
+    #board.grid.length
+    @board.grid.each do |row|
+      row.each do |square| 
+        enemy_count << square unless square.nil? || square.color == @current_player.color
+      end
+    end
+    return true if enemy_count.empty?
+    false
   end
   
 end

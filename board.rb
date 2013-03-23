@@ -56,6 +56,7 @@ class Board
   
   def valid_square?(location)
     # locaton is an array: [x,y]
+    # TODO: take out the puts and raise exceptions instead
     unless (0..7).include?(location[0]) && (0..7).include?(location[1])
       puts "#{location[0]},#{location[1]} is not even on the board!"
       return false
@@ -77,7 +78,6 @@ class Board
   def slide_one_good?(start_point, end_point)
     #get vectors for start_point
     vectors = grid[start_point[0]][start_point[1]].vectors
-    
     #can this be a helper function?
     vectors.each do |vector|
       possible_location = [start_point[0]+vector[0], start_point[1]+vector[1]]
