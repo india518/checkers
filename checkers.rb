@@ -28,6 +28,11 @@ class Checkers
       end
   
       board.do_move(move)
+      #TODO:
+      # is there another move for the player to make
+      # i.e. another jump, or a choice between two possible jumps
+      # Do we automatically make another jump, or do we make the user
+      # give us the turn?
       switch_player unless game_over = win?
     end
     

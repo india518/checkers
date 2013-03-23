@@ -43,15 +43,14 @@ class Board
     #move has two arrays: i.e. [[2,1],[3,2]]. Let's break it into points!
     start_point = move[0]
     end_point = move[1]
-    #are both points valid?
     return false unless valid_square?(start_point)
     return false unless valid_square?(end_point)
     return false unless valid_piece?(start_point, color)
+    return false unless square_empty?(end_point)
     return true if slide_one_good?(start_point, end_point)
     #is the end point one jump (two squares) away in the right direction?
     return true if valid_jump?(start_point, end_point)
-    #if we aren't sliding up and we aren't making a jump,
-    false
+    false #we aren't sliding up and we aren't making a jump:
   end
   
   def valid_square?(location)
@@ -74,12 +73,14 @@ class Board
   def valid_piece?(location, color)
     color == grid[location[0]][location[1]].color
   end
+  
+  def square_empty?(location)
+    grid[location[0]][location[1]].nil?  
+  end
 
   def slide_one_good?(start_point, end_point)
-    #get vectors for start_point
     vectors = grid[start_point[0]][start_point[1]].vectors
-    #can this be a helper function?
-    vectors.each do |vector|
+    vectors.each do |vector| #TODO: can this be a helper function?
       possible_location = [start_point[0]+vector[0], start_point[1]+vector[1]]
       return true if possible_location == end_point #we got a good move!
     end
@@ -88,7 +89,6 @@ class Board
 
   def valid_jump?(start_point, end_point)
     possible_locations = []
-    #get vectors for start_point
     piece = grid[start_point[0]][start_point[1]]
     vectors = piece.vectors
     
@@ -107,7 +107,6 @@ class Board
           puts "You can't jump your own piece!" #raise an exception later!!
           return false
         elsif grid[middle_spot[0]][middle_spot[1]].color != piece.color
-          #puts "This move is OK!"
           return true #yay!
         end
       end
@@ -141,6 +140,9 @@ class Board
       end
     end
     nil
+  end
+
+  def make_king
   end
 
 end
