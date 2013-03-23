@@ -10,17 +10,17 @@ class Board
   
   def place_red_pieces
     [0,2,4,6].each do |y|
-      self.grid[0][1+y] = Piece.new(:red, [0, 1+y])
-      self.grid[1][0+y] = Piece.new(:red, [1, 0+y])
-      self.grid[2][1+y] = Piece.new(:red, [2, 1+y])
+      self.grid[0][1+y] = Piece.new(:red)
+      self.grid[1][0+y] = Piece.new(:red)
+      self.grid[2][1+y] = Piece.new(:red)
     end
   end
   
   def place_black_pieces
     [0,2,4,6].each do |y|
-      self.grid[5][0+y] = Piece.new(:black, [5, 0+y])
-      self.grid[6][1+y] = Piece.new(:black, [6, 1+y])
-      self.grid[7][0+y] = Piece.new(:black, [7, 0+y])
+      self.grid[5][0+y] = Piece.new(:black)
+      self.grid[6][1+y] = Piece.new(:black)
+      self.grid[7][0+y] = Piece.new(:black)
     end
   end
   
@@ -116,14 +116,31 @@ class Board
     false
   end
   
-  def do_move(start_location,end_location,middle = nil)
-    playing_piece = grid[start_location[0]][start_location[1]]
+  def do_move(move)
+    #move has two arrays: i.e. [[2,1],[3,2]]. Let's break it into points!
+    start_point, end_point = move[0], move[1]
+    playing_piece = grid[start_point[0]][start_point[1]].dup
+    middle_piece = get_victim(start_point,end_point)
     # Update board
-    grid[start_location[0]][start_location[1]] = nil
-    grid[end_location[0]][end_location[1]] = playing_piece
-    #kill enemy!!! (if we jumped one) and update piece's position
-    grid[middle[0]][middle[1]] = nil if middle
-    playing_piece.position = [end_location[0]][end_location[1]]
+    self.grid[start_point[0]][start_point[1]] = nil
+    self.grid[middle_piece[0]][middle_piece[1]] = nil if middle_piece
+    self.grid[end_point[0]][end_point[1]] = playing_piece
   end
   
+  def get_victim(start_point, end_point)
+    playing_piece = grid[start_point[0]][start_point[1]]
+    vectors = playing_piece.vectors
+    
+    vectors.each do |vector|
+      middle_spot = [start_point[0]+vector[0], start_point[1]+vector[1]]
+      #we can do this because end_spot will not match end_point if we are
+      # only jumping one space!
+      end_spot = [start_point[0]+(vector[0]*2), start_point[1]+(vector[1]*2)]
+      if end_spot == end_point
+          return middle_spot
+      end
+    end
+    nil
+  end
+
 end

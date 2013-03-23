@@ -1,11 +1,10 @@
 class Piece
 
   attr_reader :color, :display
-  attr_accessor :position, :king
+  attr_accessor :king
   
-  def initialize(color, position)
+  def initialize(color)
     @color = color
-    @position = position
     @king = false
     @display = get_display
   end
