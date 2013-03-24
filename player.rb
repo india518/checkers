@@ -5,18 +5,30 @@ class Player
   def initialize(color)
     @color = color
   end
-  
-  def get_move
-    
-  end
 
-  def inform_invalid_move
-    puts "Bad move, try again"
-    # Use Exceptions to let the user know WHY the move is bad!
+  def inform_invalid_move(string = "Bad move, try again")
+    puts string
   end
   
 end
 
 class HumanPlayer < Player
+  
+  def get_move
+    move = [[],[]]
+    puts "It's your turn, #{@color}."
+    puts "Where is the piece that you want to move? (i.e. 6,0) "
+    start_move = gets.chomp.split(',')
+    move[0][0] = start_move[0].to_i
+    move[0][1] = start_move[1].to_i
+    puts "Where would you like to move it to? (i.e. 5,0) "
+    end_move = gets.chomp.split(',')
+    move[1][0] = end_move[0].to_i
+    move[1][1] = end_move[1].to_i
+    move
+  end
+end
+
+class ComputerPlayer < Player
   
 end

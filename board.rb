@@ -59,25 +59,28 @@ class Board
     # locaton is an array: [x,y]
     # TODO: take out the puts and raise exceptions instead
     unless (0..7).include?(location[0]) && (0..7).include?(location[1])
-      raise "#{location[0]},#{location[1]} is not even on the board!"
-      return false
+      raise RuntimeError.new "#{location[0]},#{location[1]} is not even on the board!"
     end
     if location[0].even? && location[1].even?
-      raise "#{location[0]},#{location[1]} is not a valid square."
-      return false
+      raise RuntimeError.new "#{location[0]},#{location[1]} is not a valid square."
     elsif location[0].odd? && location[1].odd?
-      raise "#{location[0]},#{location[1]} is not a valid square."
-      return false
+      raise RuntimeError.new "#{location[0]},#{location[1]} is not a valid square."
     end
     true
   end
   
   def valid_piece?(location, color)
-    color == grid[location[0]][location[1]].color
+    if color != grid[location[0]][location[1]].color
+      raise RuntimeError.new "This piece does not belong to you!"
+    end
+    true
   end
   
   def square_empty?(location)
-    grid[location[0]][location[1]].nil?  
+    unless grid[location[0]][location[1]].nil?
+      raise RuntimeError.new "Can't move to an occupied square."
+    end
+    grid[location[0]][location[1]].nil?
   end
 
   def slide_one_good?(start_point, end_point)
@@ -103,11 +106,9 @@ class Board
       if possible_location == end_point
         #is there an enemy in between?
         if grid[middle_spot[0]][middle_spot[1]].nil?
-          raise "You can't jump an empty spot!"
-          return false
+          raise RuntimeError.new "You can't jump an empty spot."
         elsif grid[middle_spot[0]][middle_spot[1]].color == piece.color
-          raise "You can't jump your own piece!"
-          return false
+          raise RuntimeError.new "You can't jump your own piece."
         elsif grid[middle_spot[0]][middle_spot[1]].color != piece.color
           return true #yay!
         end

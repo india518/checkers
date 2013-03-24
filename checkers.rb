@@ -5,6 +5,7 @@ load 'piece.rb'
 
 class Checkers
   attr_accessor :board
+  attr_reader :current_player
   
   def initialize
     @board = Board.new
@@ -23,8 +24,13 @@ class Checkers
     
       until valid_move
         move = current_player.get_move
-        valid_move = board.validate_move(move, current_player.color)
-        current_player.inform_invalid_move unless valid_move
+        begin
+          valid_move = board.validate_move(move, current_player.color)
+        rescue RuntimeError => e
+          current_player.inform_invalid_move(e.message)
+        end
+        #can take this out?
+        #current_player.inform_invalid_move unless valid_move
       end
   
       board.do_move(move)
@@ -33,7 +39,8 @@ class Checkers
       # i.e. another jump, or a choice between two possible jumps
       # Do we automatically make another jump, or do we make the user
       # give us the turn?
-      switch_player unless game_over = win?
+      game_over = win?
+      switch_player unless game_over
     end
     
     puts "Yay, #{current_player.color} wins!"
@@ -48,11 +55,7 @@ class Checkers
   end
   
   def win?
-    # are all enemy_player's pieces removed from board?
-    # iterate over board for enemy color
     enemy_count = []
-    
-    #board.grid.length
     @board.grid.each do |row|
       row.each do |square| 
         enemy_count << square unless square.nil? || square.color == @current_player.color
@@ -63,3 +66,5 @@ class Checkers
   end
   
 end
+
+game = Checkers.new
