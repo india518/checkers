@@ -59,14 +59,14 @@ class Board
     # locaton is an array: [x,y]
     # TODO: take out the puts and raise exceptions instead
     unless (0..7).include?(location[0]) && (0..7).include?(location[1])
-      puts "#{location[0]},#{location[1]} is not even on the board!"
+      raise "#{location[0]},#{location[1]} is not even on the board!"
       return false
     end
     if location[0].even? && location[1].even?
-      puts "#{location[0]},#{location[1]} is not a valid square."
+      raise "#{location[0]},#{location[1]} is not a valid square."
       return false
     elsif location[0].odd? && location[1].odd?
-      puts "#{location[0]},#{location[1]} is not a valid square."
+      raise "#{location[0]},#{location[1]} is not a valid square."
       return false
     end
     true
@@ -103,10 +103,10 @@ class Board
       if possible_location == end_point
         #is there an enemy in between?
         if grid[middle_spot[0]][middle_spot[1]].nil?
-          puts "You can't jump an empty spot!" #raise an exception later!!
+          raise "You can't jump an empty spot!"
           return false
         elsif grid[middle_spot[0]][middle_spot[1]].color == piece.color
-          puts "You can't jump your own piece!" #raise an exception later!!
+          raise "You can't jump your own piece!"
           return false
         elsif grid[middle_spot[0]][middle_spot[1]].color != piece.color
           return true #yay!

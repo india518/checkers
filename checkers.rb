@@ -40,9 +40,9 @@ class Checkers
   end
 
   def switch_player
-    if current_player == @red
+    if @current_player == @red
       @current_player = @black
-    else current_player == @black
+    else @current_player == @black
       @current_player = @red
     end
   end
