@@ -46,7 +46,7 @@ class Board
     start_point = move[0]
     end_point = move[1]
     return false unless valid_square?(start_point)
-    return false unless valid_square?(end_point)
+    return false unless valid_square?(end_point)   
     return false unless valid_piece?(start_point, color)
     return false unless square_empty?(end_point)
     return true if slide_one_good?(start_point, end_point)
@@ -70,7 +70,9 @@ class Board
   end
   
   def valid_piece?(location, color)
-    if color != grid[location[0]][location[1]].color
+    if grid[location[0]][location[1]].nil?
+      raise RuntimeError.new "There is no piece to move on #{location[0]},#{location[1]}"
+    elsif color != grid[location[0]][location[1]].color
       raise RuntimeError.new "This piece does not belong to you!"
     end
     true
@@ -89,7 +91,7 @@ class Board
       possible_location = [start_point[0]+vector[0], start_point[1]+vector[1]]
       return true if possible_location == end_point #we got a good move!
     end
-    false
+    raise RuntimeError.new "You can't move that piece in that direction."
   end
 
   def valid_jump?(start_point, end_point)
@@ -97,8 +99,7 @@ class Board
     piece = grid[start_point[0]][start_point[1]]
     vectors = piece.vectors
     
-    #this is a jump, so our multiplier is 2! (enemy multiplier is 1)
-    # TODO: again, can this be a helper function?
+    # jump means we have a multiplier of 2. TODO: Again, can this be a helper?
     vectors.each do |vector|
       middle_spot = [start_point[0]+vector[0], start_point[1]+vector[1]]
       possible_location = [start_point[0]+(vector[0]*2), start_point[1]+(vector[1]*2)]
@@ -110,12 +111,11 @@ class Board
         elsif grid[middle_spot[0]][middle_spot[1]].color == piece.color
           raise RuntimeError.new "You can't jump your own piece."
         elsif grid[middle_spot[0]][middle_spot[1]].color != piece.color
-          return true #yay!
+          return true #yay, found it!
         end
       end
     end
-    #endpoint not in acceptable path
-    false
+    raise RuntimeError.new "You can't move that piece in that direction."
   end
   
   def do_move(move)
@@ -135,12 +135,9 @@ class Board
     
     vectors.each do |vector|
       middle_spot = [start_point[0]+vector[0], start_point[1]+vector[1]]
-      #we can do this because end_spot will not match end_point if we are
-      # only jumping one space!
+      #ok because end_spot != end_point if we're only jumping one space!
       end_spot = [start_point[0]+(vector[0]*2), start_point[1]+(vector[1]*2)]
-      if end_spot == end_point
-          return middle_spot
-      end
+      return middle_spot if end_spot == end_point
     end
     nil
   end

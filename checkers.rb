@@ -29,21 +29,20 @@ class Checkers
         rescue RuntimeError => e
           current_player.inform_invalid_move(e.message)
         end
-        #can take this out?
-        #current_player.inform_invalid_move unless valid_move
       end
   
       board.do_move(move)
-      #TODO:
-      # is there another move for the player to make
-      # i.e. another jump, or a choice between two possible jumps
+      board.make_kings
+      #TODO: Implement continuing turn for current_player
+      # is there another move for the player to make?
+      # i.e. another jump, or a choice between two possible jumps.
       # Do we automatically make another jump, or do we make the user
       # give us the turn?
       game_over = win?
       switch_player unless game_over
     end
     
-    puts "Yay, #{current_player.color} wins!"
+    puts "Yay, you win, #{current_player.color}!"
   end
 
   def switch_player
@@ -68,3 +67,4 @@ class Checkers
 end
 
 game = Checkers.new
+game.play
