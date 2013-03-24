@@ -27,9 +27,9 @@ class Board
   end
   
   def display
-    print "    | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |\n"
+    print "  | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |\n"
     8.times do |row|
-      print "#{row} : "
+      print "#{row} "
       8.times do |column|
         if self.grid[row][column].nil?
           print "|   " 

@@ -9,7 +9,6 @@ class Checkers
   
   def initialize
     @board = Board.new
-    #initialize two players
     @red = HumanPlayer.new(:red)
     @black = HumanPlayer.new(:black)
     @current_player = @red
@@ -20,17 +19,11 @@ class Checkers
     
     until game_over
       board.display
-      valid_move = false
-    
-      until valid_move
+      move = current_player.get_move
+      
+      until valid_move?(move)
         move = current_player.get_move
-        begin
-          valid_move = board.validate_move(move, current_player.color)
-        rescue RuntimeError => e
-          current_player.inform_invalid_move(e.message)
-        end
       end
-  
       board.do_move(move)
       board.make_kings
       #TODO: Implement continuing turn for current_player
@@ -43,6 +36,14 @@ class Checkers
     end
     
     puts "Yay, you win, #{current_player.color}!"
+  end
+  
+  def valid_move?(move)
+    begin
+      board.validate_move(move, current_player.color)
+    rescue RuntimeError => e
+      current_player.inform_invalid_move(e.message)
+    end
   end
 
   def switch_player

@@ -12,13 +12,13 @@ class Piece
   def get_display
     case [@color, @king]
     when [:red, false]
-      @display = :r
+      @display = :r.to_s.colorize(:red)
     when [:red, true]
-      @display = :R
+      @display = :R.to_s.colorize(:red)
     when [:black, false]
-      @display = :b
+      @display = :b.to_s.colorize(:black)
     when [:black, true]
-      @display = :B
+      @display = :B.to_s.colorize(:black)
     end
   end
   
