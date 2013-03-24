@@ -1,3 +1,5 @@
+require 'debugger'
+
 class Board
   
   attr_accessor :grid
@@ -142,7 +144,21 @@ class Board
     nil
   end
 
-  def make_king
+  def make_kings
+    black_king_row = self.grid[0]
+    red_king_row = self.grid[7]
+    black_king_row.each do |square| 
+      if square && square.color == :black
+        square.king = true
+        square.get_display
+      end
+    end
+    red_king_row.each do |square| 
+      if square && square.color == :red
+        square.king = true
+        square.get_display
+      end
+    end
   end
-
+  
 end
